@@ -8,7 +8,7 @@
 
 ```
 
-career-advisor-genai/
+Career_Advisor_Chatbot_GenAI/
 │
 ├── app.py                     # Streamlit UI entrypoint
 ├── requirements.txt
