@@ -7,7 +7,6 @@ career-advisor-genai/
 │
 ├── app.py                     # Streamlit UI entrypoint
 ├── requirements.txt
-├── README.md
 │
 ├── config/
 │   └── settings.py            # App-level configuration
