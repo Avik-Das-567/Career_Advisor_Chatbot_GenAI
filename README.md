@@ -1,294 +1,531 @@
-# Career Advisor Chatbot (GenAI)
+# 🎓 Career Advisor Chatbot (GenAI)
 
-### Live App: https://career-advisor-chatbot.streamlit.app
+> A production-ready, domain-specific AI career guidance chatbot powered by the **Google Gemini GenAI API**, built with a modular backend architecture and deployed on **Streamlit Community Cloud**.
 
-A production-style AI career guidance chatbot built using **Python**, **Streamlit**, and **Google Gemini GenAI API**.
-This application provides **structured career advice**, **skill recommendations**, and **learning roadmaps** based on user queries.
+[![Live App](https://img.shields.io/badge/Live%20App-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://career-advisor-chatbot.streamlit.app)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Gemini API](https://img.shields.io/badge/Gemini-2.5--flash--lite-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://ai.google.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-The project demonstrates how to build a **modular, production-ready GenAI system** with proper architecture, prompt engineering, memory management, and API integration.
+---
 
-## Project Overview
+## 📌 Table of Contents
 
-The **Career Advisor Chatbot** is an AI-powered assistant designed to help users explore career paths, identify required skills, and understand realistic learning roadmaps.
+- [Project Overview](#-project-overview)
+- [Live Demo](#-live-demo)
+- [Features](#-features)
+- [System Architecture](#-system-architecture)
+- [Project Structure](#-project-structure)
+- [Module Breakdown](#-module-breakdown)
+- [Prompt Engineering Design](#-prompt-engineering-design)
+- [Conversation Memory System](#-conversation-memory-system)
+- [Tech Stack](#-tech-stack)
+- [Local Setup & Installation](#-local-setup--installation)
+- [Deployment](#-deployment)
+- [Example Queries](#-example-queries)
+- [Error Handling & Logging](#-error-handling--logging)
+- [Future Improvements](#-future-improvements)
 
-Unlike simple chatbots, this system follows a **production-ready architecture** with clear separation between:
-- UI layer
-- API layer
-- Prompt engineering
-- Conversation memory
-- Response processing
-- Logging and error handling
+---
 
-The chatbot leverages the **Google Gemini GenAI API** to generate intelligent responses and provides **structured career guidance** to users.
+## 🧠 Project Overview
 
-The project was designed to simulate a **real-world GenAI system implementation** rather than a simple prototype.
+The **Career Advisor Chatbot** is a production-grade AI application that provides structured, actionable career guidance to users. It leverages Google's **Gemini 2.5 Flash Lite** model for fast, intelligent responses and is built following real-world AI engineering principles.
 
-The application includes:
-- Domain-specific prompt engineering
-- Multi-turn conversation memory
-- Modular backend design
-- Secure API key management
-- Streamlit-based chat interface
-- Cloud deployment via Streamlit Community Cloud
+The project goes beyond a basic chatbot prototype by implementing:
 
-The chatbot focuses on providing **actionable, realistic career advice** instead of generic responses.
+- A **layered, modular backend** with clear separation of concerns
+- **Advanced prompt engineering** using a structured system prompt with enforced response formats
+- **Session-based multi-turn conversation memory** to maintain context across interactions
+- **Secure API key management** using Streamlit Secrets
+- **Centralized logging and custom exception handling**
+- **Cloud deployment** on Streamlit Community Cloud
 
-## Features
+The chatbot is designed to help users explore career paths, assess skill gaps, understand learning roadmaps, and evaluate career transitions — all through a natural, conversational interface.
 
-### AI-Powered Career Guidance
+---
 
-Users can ask questions about:
-- Career paths
-- Required skills
-- Learning roadmaps
-- Career transitions
-- Industry demand
+## 🚀 Live Demo
 
-The AI generates structured responses using the Gemini GenAI model.
+**🔗 [https://career-advisor-chatbot.streamlit.app](https://career-advisor-chatbot.streamlit.app)**
 
-### Structured Career Advice Format
+---
 
-Responses are designed using prompt engineering to always include:
+## ✨ Features
 
+### 🤖 AI-Powered Career Guidance
+Integrated with the **Google Gemini 2.5 Flash Lite** model to generate fast, high-quality, domain-specific career advice. The model is accessed via the `google-genai` Python SDK.
+
+### 📋 Structured Response Format
+Every response from the chatbot follows a consistent, prompt-enforced structure:
+1. **Career Insight** — context about the career or role
+2. **Recommended Skills** — technical and soft skills required
+3. **Learning Path** — step-by-step roadmap or resource guidance
+4. **Potential Risks** — honest evaluation of challenges or downsides
+5. **Next Actions** — immediate, actionable steps the user can take
+
+### 🧩 Multi-Turn Conversation Memory
+The chatbot maintains a **sliding window of the last 5 conversation turns** as context. Each new prompt includes this history, allowing the model to understand evolving conversations and respond to follow-up questions coherently.
+
+### 🛠️ Modular Backend Architecture
+The codebase is structured into dedicated, single-responsibility modules for API handling, prompt construction, memory management, response processing, logging, and exception handling — following clean architecture principles.
+
+### 🔐 Secure API Key Management
+The Gemini API key is never hardcoded. It is stored and accessed securely via **Streamlit Secrets** (`st.secrets`), making the app safe for cloud deployment.
+
+### 📝 Centralized Logging
+All API calls, errors, and significant application events are logged using Python's built-in `logging` module with a consistent timestamp format, enabling effective debugging and monitoring.
+
+### ⚠️ Custom Exception Handling
+A dedicated `GeminiAPIException` class is defined for domain-specific error management, with graceful fallback messages displayed to the user on API failures (e.g., quota exhaustion).
+
+### 💬 Interactive Streamlit Chat UI
+The UI uses Streamlit's native `st.chat_message` and `st.chat_input` components to deliver a clean, modern chat interface with real-time responses, conversation history, and loading indicators.
+
+---
+
+## 🏗️ System Architecture
+
+The application follows a **unidirectional, layered pipeline architecture**:
+
+```
+┌────────────────────────────────────────────┐
+│                   User                     │
+└────────────────────┬───────────────────────┘
+                     │ User Input
+                     ▼
+┌────────────────────────────────────────────┐
+│           Streamlit UI  (app.py)           │
+│  - Chat input / output rendering           │
+│  - Session state & message history         │
+└────────────────────┬───────────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────────┐
+│        Conversation Memory Manager         │
+│  (core/memory_manager.py)                  │
+│  - Retrieves last N turns as context       │
+└────────────────────┬───────────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────────┐
+│           Prompt Manager                   │
+│  (core/prompt_manager.py)                  │
+│  - Injects system prompt + context         │
+│  - Constructs final prompt string          │
+└────────────────────┬───────────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────────┐
+│           Gemini API Client                │
+│  (core/gemini_client.py)                   │
+│  - Authenticates with Gemini API           │
+│  - Sends prompt, receives raw response     │
+└────────────────────┬───────────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────────┐
+│           Response Handler                 │
+│  (core/response_handler.py)                │
+│  - Cleans, validates, formats response     │
+└────────────────────┬───────────────────────┘
+                     │
+                     ▼
+┌────────────────────────────────────────────┐
+│         UI Rendering + Memory Update       │
+│  - Displays final response to user         │
+│  - Updates memory with this turn           │
+└────────────────────────────────────────────┘
+```
+
+---
+
+## 📁 Project Structure
+
+```
+Career_Advisor_Chatbot_GenAI/
+│
+├── app.py                    # Main Streamlit application entry point
+├── requirements.txt          # Python dependencies
+│
+├── core/                     # Core backend logic
+│   ├── gemini_client.py      # Gemini API integration
+│   ├── prompt_manager.py     # Prompt engineering & construction
+│   ├── memory_manager.py     # Conversation memory management
+│   └── response_handler.py   # Response processing & formatting
+│
+├── utils/                    # Utility modules
+│   ├── logger.py             # Centralized logging configuration
+│   └── exceptions.py         # Custom exception definitions
+│
+├── config/                   # Application configuration
+│   └── settings.py           # App-level constants and settings
+│
+└── assets/                   # UI assets
+    └── ui_styles.py          # Custom CSS for chat interface styling
+```
+
+---
+
+## 🔍 Module Breakdown
+
+### `app.py` — Application Entry Point
+
+The main Streamlit application that orchestrates the entire pipeline. It is responsible for:
+
+- Configuring the Streamlit page (title, icon, layout)
+- Initializing and persisting `ConversationMemory` and message history across reruns using `st.session_state`
+- Instantiating backend modules: `GeminiClient`, `PromptManager`, `ResponseHandler`
+- Rendering all previous messages from session state on each page load
+- Accepting user input via `st.chat_input` and coordinating the full request-response cycle
+- Updating conversation memory and message history after each response
+
+**Key design decision:** `st.session_state` is used for both the raw message list (for UI rendering) and the `ConversationMemory` object (for prompt construction), keeping display logic and API context logic independent.
+
+---
+
+### `core/gemini_client.py` — Gemini API Client
+
+Handles all communication with the Google Gemini GenAI API.
+
+- Retrieves the API key securely from `st.secrets`
+- Raises a `ValueError` immediately on initialization if the key is missing, preventing silent failures
+- Uses the `google-genai` Python SDK (`genai.Client`) to instantiate the API client
+- Sends prompts to the **`gemini-2.5-flash-lite`** model via `client.models.generate_content()`
+- Catches all API exceptions, logs the error, and returns a user-friendly fallback message
+
+```python
+# Model used
+self.model_name = "gemini-2.5-flash-lite"
+```
+
+---
+
+### `core/prompt_manager.py` — Prompt Engineering Layer
+
+Constructs the final prompt sent to the Gemini model by combining a structured system prompt, conversation context, and the user's current query.
+
+**System Prompt Design:**
+```
+You are a professional Career Advisor AI.
+
+RULES:
+- Provide structured, realistic career guidance.
+- Avoid generic motivation or vague advice.
+- Base suggestions on skills, market demand, and learning paths.
+- If information is missing, ask clarifying questions.
+- Never fabricate job guarantees or salaries.
+- Always provide actionable next steps.
+
+RESPONSE FORMAT:
 1. Career Insight
 2. Recommended Skills
 3. Learning Path
 4. Potential Risks
 5. Next Actions
-
-This ensures **consistent** and **practical advice**.
-
-### Multi-Turn Conversation Memory
-
-The chatbot maintains conversation context to support follow-up questions.
-
-Conversation memory stores recent interactions and passes them to the model as context.
-
-This enables the chatbot to understand:
-- previous questions
-- previous advice
-- evolving career discussions
-
-### Prompt Engineering Layer
-
-A dedicated **Prompt Manager** constructs structured prompts that guide the AI to generate domain-specific responses.
-
-The prompt enforces rules such as:
-- Avoid vague advice
-- Ask clarifying questions when needed
-- Provide actionable steps
-- Avoid unrealistic guarantees
-
-### Modular Backend Architecture
-
-The project separates responsibilities into different modules:
-- Gemini API integration
-- Prompt engineering
-- Conversation memory
-- Response processing
-- Logging
-- Exception handling
-
-This design improves **maintainability** and **scalability**.
-
-### Secure API Key Handling
-
-The Gemini API key is securely stored using **Streamlit Secrets** instead of hardcoding credentials.
-
-### Error Handling and Logging
-
-The system includes:
-- centralized logging
-- API error handling
-- graceful failure responses
-
-Logging is implemented using Python's logging module.
-
-### Interactive Chat UI
-
-The chatbot interface is built with **Streamlit’s chat components** for a modern conversational experience.
-
-The interface supports:
-- chat-style messaging
-- conversation history
-- loading indicators
-- real-time responses
-
-## Tech Stack
-
-- Language: Python
-- Framework: Streamlit
-- AI Model: Google Gemini GenAI API
-- Libraries: streamlit, google-genai
-
-## System Architecture
-
-The application follows a layered architecture similar to production AI systems.
-```
- User
-   ↓
-Streamlit UI
-   ↓
-Backend Controller (app.py)
-   ↓
-Prompt Manager
-   ↓
-Conversation Memory
-   ↓
-Gemini API Client
-   ↓
-Response Handler
-   ↓
-UI Rendering
 ```
 
-### Component Responsibilities
-- **UI Layer:** Handles user input and displays responses.
-- **Prompt Engineering Layer:** Constructs structured prompts to guide the AI model.
-- **Memory Layer:** Maintains conversation history for contextual responses.
-- **API Layer:** Handles communication with the Gemini API.
-- **Response Layer:** Processes and formats the final output.
+The `build_prompt()` method combines this system instruction with:
+- The conversation context string (from `ConversationMemory`)
+- The current user query
 
-## Project Structure:
+This three-part structure (system + context + query) is a standard **few-shot / role-prompting** pattern that significantly improves response quality and consistency.
 
+---
+
+### `core/memory_manager.py` — Conversation Memory
+
+Implements a simple but effective **sliding window memory** system.
+
+- Stores each turn as a formatted string: `"User: <input>\nAdvisor: <response>"`
+- Enforces a configurable `max_turns` limit (default: `5`) to prevent prompt bloat and token overflow
+- Removes the oldest turn when the limit is exceeded (`history.pop(0)`)
+- Exposes `get_context()` which joins all stored turns into a single string, ready to be injected into the prompt
+
+```python
+# Memory window size (configurable via config/settings.py)
+MAX_MEMORY_TURNS = 5
 ```
 
-Career_Advisor_Chatbot_GenAI/
-│
-├── app.py
-│
-├── requirements.txt
-│
-├── config/
-│   └── settings.py
-│
-├── core/
-│   ├── gemini_client.py
-│   ├── prompt_manager.py
-│   ├── memory_manager.py
-│   └── response_handler.py
-│
-├── utils/
-│   ├── logger.py
-│   └── exceptions.py
-│
-└── assets/
-    └── ui_styles.py
+---
 
+### `core/response_handler.py` — Response Processor
+
+A lightweight processing layer that validates and cleans the model's raw output before displaying it to the user.
+
+- Returns a fallback message if the API response is empty or `None`
+- Strips leading/trailing whitespace from the response text
+- Acts as the final quality gate before UI rendering — designed to be extended with additional formatting or post-processing logic
+
+---
+
+### `utils/logger.py` — Centralized Logger
+
+Configures a Python `logging` instance used throughout the application.
+
+```python
+# Log format
+"%(asctime)s | %(levelname)s | %(message)s"
 ```
 
-### app.py
-Main Streamlit application entry point. Responsibilities include:
-- UI rendering
-- Handling chat input
-- Managing session state
-- Calling backend modules
-- Displaying responses
+- Log level is set to `INFO`, capturing standard application events and errors
+- The logger is named `"CareerAdvisorGenAI"` for easy filtering in log outputs
+- Used primarily in `gemini_client.py` to log API errors
 
-The application initializes conversation memory and processes user queries through the backend pipeline.
+---
 
-### core/
-Contains the **core backend logic** of the chatbot.
+### `utils/exceptions.py` — Custom Exceptions
 
-#### gemini_client.py
-Handles communication with the **Google Gemini API**. Responsibilities include:
-- API client initialization
-- Model selection
-- Response generation
-- Error handling
+Defines application-specific exception classes for structured error management.
 
-The model used is **gemini-2.5-flash-lite** for fast responses.
-
-#### prompt_manager.py
-Responsible for **prompt engineering**. Creates structured prompts that guide the AI to generate high-quality responses. The prompt includes:
-- role definition
-- response rules
-- structured output format
-
-#### memory_manager.py
-Manages **conversation history**. Stores recent chat interactions and passes them as context to the model. Memory size is configurable and limited to recent turns to avoid token overflow.
-
-#### response_handler.py
-Processes model responses before displaying them. Responsibilities include:
-- cleaning responses
-- handling empty outputs
-- formatting final responses
-
-### utils/
-Utility modules used across the project.
-
-#### logger.py
-Provides centralized logging functionality for the application. Used for debugging and monitoring API behavior.
-
-#### exceptions.py
-
-Defines custom exceptions used in the application. Example: `GeminiAPIException`
-
-### config/
-
-Contains configuration settings for the application. Example settings include:
-- application name
-- conversation memory limits
-
-### assets/
-
-Contains UI styling resources. Custom CSS is used to slightly enhance chat message formatting.
-
-## Running the Project Locally
-**1.** Clone the repository.
+```python
+class GeminiAPIException(Exception):
+    pass
 ```
+
+`GeminiAPIException` provides a semantic wrapper around Gemini API failures, enabling future `try/except` blocks to differentiate between API errors and other runtime exceptions with precision.
+
+---
+
+### `config/settings.py` — Application Settings
+
+Centralizes application-level constants to avoid magic numbers scattered across the codebase.
+
+```python
+APP_NAME = "Career Advisor GenAI"
+MAX_MEMORY_TURNS = 5
+```
+
+This configuration-driven design makes adjustments (e.g., changing memory window size) a single-point change.
+
+---
+
+### `assets/ui_styles.py` — UI Styling
+
+Contains custom CSS injected into the Streamlit interface to enhance the visual appearance of chat messages. Designed to be extended with richer styling as needed.
+
+---
+
+## 🧪 Prompt Engineering Design
+
+The prompt follows a **role + rules + format + context + query** pattern, which is one of the most reliable structures for instruction-following language models.
+
+| Prompt Section        | Purpose                                                                 |
+|-----------------------|-------------------------------------------------------------------------|
+| **Role Definition**   | Establishes the model's persona as a "professional Career Advisor AI"   |
+| **Rules**             | Constrains model behavior — prevents hallucination, vague advice, etc.  |
+| **Response Format**   | Enforces a structured 5-section output for every response               |
+| **Conversation Context** | Provides the sliding window of past turns for continuity             |
+| **User Query**        | The current question from the user                                      |
+
+This design ensures responses are **consistent, structured, and domain-constrained** regardless of how the user phrases their question.
+
+---
+
+## 🧩 Conversation Memory System
+
+The memory system uses a **FIFO (First-In, First-Out) sliding window** approach:
+
+```
+Turn 1: User: "I want to be a data scientist"   → stored
+Turn 2: User: "What Python skills do I need?"   → stored, references Turn 1
+Turn 3: User: "What about SQL?"                 → stored, references Turns 1–2
+...
+Turn 6: new turn arrives                        → Turn 1 is dropped (max_turns=5)
+```
+
+This approach:
+- Keeps prompt length bounded to prevent excessive token usage
+- Maintains recent context for coherent follow-up conversations
+- Is reset per session (Streamlit re-initializes `st.session_state` on new browser sessions)
+
+---
+
+## 🛠️ Tech Stack
+
+| Component        | Technology                          |
+|------------------|-------------------------------------|
+| Language         | Python 3.10+                        |
+| UI Framework     | Streamlit                           |
+| AI Model         | Google Gemini 2.5 Flash Lite        |
+| Gemini SDK       | `google-genai`                      |
+| Logging          | Python `logging` (stdlib)           |
+| Secret Management| Streamlit Secrets (`st.secrets`)    |
+| Deployment       | Streamlit Community Cloud           |
+
+---
+
+## ⚙️ Local Setup & Installation
+
+### Prerequisites
+
+- Python 3.10 or higher
+- A valid [Google Gemini API Key](https://aistudio.google.com/app/apikey)
+- Git
+
+---
+
+### Step 1 — Clone the Repository
+
+```bash
 git clone https://github.com/Avik-Das-567/Career_Advisor_Chatbot_GenAI.git
 cd Career_Advisor_Chatbot_GenAI
 ```
-**2.** Create a Virtual Environment.
-```
+
+### Step 2 — Create and Activate a Virtual Environment
+
+```bash
+# Create virtual environment
 python -m venv venv
-```
-Activate it: 
-```
+
+# Activate — Windows
 venv\Scripts\activate
+
+# Activate — macOS/Linux
+source venv/bin/activate
 ```
-**3.** Install dependencies.
-```
+
+### Step 3 — Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
-**4.** Configure Gemini API Key.
 
-Create a **Streamlit secrets file:**
+**`requirements.txt` contents:**
 ```
-.streamlit/secrets.toml
+streamlit
+google-genai
 ```
-Add your API key:
+
+### Step 4 — Configure the Gemini API Key
+
+Create the Streamlit secrets directory and file:
+
+```bash
+mkdir .streamlit
 ```
-GEMINI_API_KEY = "your_api_key_here"
+
+Create the file `.streamlit/secrets.toml` and add:
+
+```toml
+GEMINI_API_KEY = "your_gemini_api_key_here"
 ```
-**5.** Run the Streamlit application.
+
+> ⚠️ **Never commit `.streamlit/secrets.toml` to version control.** Add it to your `.gitignore`.
+
+```bash
+echo ".streamlit/secrets.toml" >> .gitignore
 ```
+
+### Step 5 — Run the Application
+
+```bash
 streamlit run app.py
 ```
-**6.** Open in browser.
 
-Streamlit will automatically launch the app at:
+### Step 6 — Open in Browser
+
+Streamlit will automatically open the app. If it doesn't, visit:
+
 ```
 http://localhost:8501
 ```
 
-## Deployment
+---
 
-This project is deployed using **Streamlit Community Cloud**.
+## ☁️ Deployment
 
-The live app is available at: https://career-advisor-chatbot.streamlit.app
+This project is deployed on **Streamlit Community Cloud** — a free, managed hosting platform for Streamlit apps connected to GitHub.
 
-## Example Queries
+### Deployment Steps
 
-Users can interact with the chatbot by asking questions like:
+1. Push the project to a public GitHub repository
+2. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub
+3. Click **"New app"** and select your repository, branch (`main`), and entry point (`app.py`)
+4. Under **"Advanced settings"**, add your secret:
+   ```
+   GEMINI_API_KEY = "your_gemini_api_key_here"
+   ```
+5. Click **"Deploy"** — the app will be live within a few minutes
 
-- _What skills do I need to become a data scientist?_
-- _How can I transition from mechanical engineering to software development?_
-- _Is cybersecurity a good career path in 2026?_
-- _What roadmap should I follow to become a machine learning engineer?_
-- _What are the risks of switching careers into AI?_
-
-The chatbot will generate **structured, actionable career advice.**
+**Live URL:** [https://career-advisor-chatbot.streamlit.app](https://career-advisor-chatbot.streamlit.app)
 
 ---
+
+## 💬 Example Queries
+
+The chatbot is designed to handle a wide range of career-related queries. Here are some examples:
+
+| Query | What to Expect |
+|-------|----------------|
+| *"What skills do I need to become a data scientist?"* | Skills breakdown, learning path, tools to learn |
+| *"How can I transition from mechanical engineering to software development?"* | Transferable skills, gaps to fill, recommended roadmap |
+| *"Is cybersecurity a good career in 2026?"* | Market demand analysis, risks, entry points |
+| *"What roadmap should I follow to become an ML engineer?"* | Step-by-step learning path from fundamentals to deployment |
+| *"What are the risks of switching careers into AI?"* | Honest evaluation of challenges, timelines, and expectations |
+| *"I know Python basics. What should I learn next for data science?"* | Personalised next steps based on current skill level |
+
+---
+
+## 🚨 Error Handling & Logging
+
+### API Error Handling
+
+The `GeminiClient` wraps all API calls in a `try/except` block. If the API call fails (e.g., due to quota exhaustion, network errors, or invalid responses), the error is:
+1. Logged at `ERROR` level with the exception message
+2. Caught gracefully — the user sees a friendly fallback message instead of a crash:
+
+```
+⚠️ Daily API quota reached or model unavailable.
+```
+
+### Missing API Key
+
+If `GEMINI_API_KEY` is not found in `st.secrets`, `GeminiClient.__init__()` raises a `ValueError` immediately. The `app.py` catches this and displays:
+
+```
+❌ Gemini API Key not found. Please configure Streamlit Secrets.
+```
+
+The app then calls `st.stop()` to halt execution cleanly.
+
+### Empty Responses
+
+The `ResponseHandler` checks for empty or `None` model outputs and returns:
+
+```
+⚠️ No response generated.
+```
+
+### Log Format
+
+All logs follow this format for easy parsing:
+
+```
+2026-04-09 14:32:01,452 | ERROR | Gemini API Error: 429 Resource has been exhausted
+```
+
+---
+
+## 🔮 Future Improvements
+
+- **RAG Integration** — connect the chatbot to a vector database (e.g., Pinecone, ChromaDB) populated with career resources, job market data, and skill taxonomies for grounded, factual responses
+- **Persistent Memory** — replace session-based memory with a database-backed store (e.g., SQLite, Redis) to persist conversations across sessions
+- **User Authentication** — add login functionality to save user-specific conversation history
+- **Streaming Responses** — use the Gemini streaming API with `st.write_stream()` for a more dynamic typing effect
+- **Feedback Loop** — add thumbs up/down buttons on responses to collect user feedback for future prompt tuning
+- **Export Conversation** — allow users to download their career advice session as a PDF or text file
+- **Multi-language Support** — expand the system prompt to handle queries in multiple languages
+
+---
+
+## 👤 Author
+
+**Avik Das**
+[GitHub](https://github.com/Avik-Das-567)
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
