@@ -12,7 +12,7 @@
 ## 📌 Table of Contents
 
 - [Project Overview](#-project-overview)
-- [Live Demo](#-live-demo)
+- [Live App](#-live-app)
 - [Features](#-features)
 - [System Architecture](#-system-architecture)
 - [Project Structure](#-project-structure)
@@ -45,7 +45,7 @@ The chatbot is designed to help users explore career paths, assess skill gaps, u
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Live App
 
 **🔗 [https://career-advisor-chatbot.streamlit.app](https://career-advisor-chatbot.streamlit.app)**
 
