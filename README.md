@@ -521,8 +521,7 @@ All logs follow this format for easy parsing:
 
 ## 👤 Author
 
-**Avik Das**
-[GitHub](https://github.com/Avik-Das-567)
+**[Avik Das](https://github.com/Avik-Das-567)**
 
 ---
 
