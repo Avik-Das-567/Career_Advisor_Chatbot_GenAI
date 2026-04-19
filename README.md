@@ -30,7 +30,7 @@
 
 ## 🧠 Project Overview
 
-The **Career Advisor Chatbot** is a production-grade AI application that provides structured, actionable career guidance to users. It leverages Google's **Gemini 2.5 Flash Lite** model for fast, intelligent responses and is built following real-world AI engineering principles.
+The **Career Advisor Chatbot** is a production-grade AI application that provides structured, actionable career guidance to users. It leverages Google's **Gemini 3.1 Flash Lite** model for fast, intelligent responses and is built following real-world AI engineering principles.
 
 The project goes beyond a basic chatbot prototype by implementing:
 
@@ -47,7 +47,7 @@ The chatbot is designed to help users explore career paths, assess skill gaps, u
 
 ## 🚀 Live App
 
-**🔗 [https://career-advisor-chatbot.streamlit.app](https://career-advisor-chatbot.streamlit.app)**
+🔗 [https://career-advisor-chatbot.streamlit.app](https://career-advisor-chatbot.streamlit.app)
 
 ---
 
@@ -521,7 +521,7 @@ All logs follow this format for easy parsing:
 
 ## 👤 Author
 
-**[Avik Das](https://github.com/Avik-Das-567)**
+[Avik Das](https://github.com/Avik-Das-567)
 
 ---
 
