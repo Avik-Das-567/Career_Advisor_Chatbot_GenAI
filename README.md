@@ -9,25 +9,6 @@
 
 ---
 
-## 📌 Table of Contents
-
-- [Project Overview](#-project-overview)
-- [Live App](#-live-app)
-- [Features](#-features)
-- [System Architecture](#-system-architecture)
-- [Project Structure](#-project-structure)
-- [Module Breakdown](#-module-breakdown)
-- [Prompt Engineering Design](#-prompt-engineering-design)
-- [Conversation Memory System](#-conversation-memory-system)
-- [Tech Stack](#-tech-stack)
-- [Local Setup & Installation](#-local-setup--installation)
-- [Deployment](#-deployment)
-- [Example Queries](#-example-queries)
-- [Error Handling & Logging](#-error-handling--logging)
-- [Future Improvements](#-future-improvements)
-
----
-
 ## 🧠 Project Overview
 
 The **Career Advisor Chatbot** is a production-grade AI application that provides structured, actionable career guidance to users. It leverages Google's **Gemini 3.1 Flash Lite** model for fast, intelligent responses and is built following real-world AI engineering principles.
