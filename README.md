@@ -1,4 +1,4 @@
-# 🎓 Career Advisor Chatbot (GenAI)
+# 🎓 Career Advisor Chatbot (Gen AI)
 
 > A production-ready, domain-specific AI career guidance chatbot powered by the **Google Gemini GenAI API**, built with a modular backend architecture and deployed on **Streamlit Community Cloud**.
 
@@ -54,7 +54,7 @@ The chatbot is designed to help users explore career paths, assess skill gaps, u
 ## ✨ Features
 
 ### 🤖 AI-Powered Career Guidance
-Integrated with the **Google Gemini 2.5 Flash Lite** model to generate fast, high-quality, domain-specific career advice. The model is accessed via the `google-genai` Python SDK.
+Integrated with the **Google Gemini 3.1 Flash Lite** model to generate fast, high-quality, domain-specific career advice. The model is accessed via the `google-genai` Python SDK.
 
 ### 📋 Structured Response Format
 Every response from the chatbot follows a consistent, prompt-enforced structure:
@@ -191,12 +191,12 @@ Handles all communication with the Google Gemini GenAI API.
 - Retrieves the API key securely from `st.secrets`
 - Raises a `ValueError` immediately on initialization if the key is missing, preventing silent failures
 - Uses the `google-genai` Python SDK (`genai.Client`) to instantiate the API client
-- Sends prompts to the **`gemini-2.5-flash-lite`** model via `client.models.generate_content()`
+- Sends prompts to the **`gemini-3.1-flash-lite`** model via `client.models.generate_content()`
 - Catches all API exceptions, logs the error, and returns a user-friendly fallback message
 
 ```python
 # Model used
-self.model_name = "gemini-2.5-flash-lite"
+self.model_name = "gemini-3.1-flash-lite"
 ```
 
 ---
@@ -347,7 +347,7 @@ This approach:
 |------------------|-------------------------------------|
 | Language         | Python 3.10+                        |
 | UI Framework     | Streamlit                           |
-| AI Model         | Google Gemini 2.5 Flash Lite        |
+| AI Model         | Google Gemini 3.1 Flash Lite        |
 | Gemini SDK       | `google-genai`                      |
 | Logging          | Python `logging` (stdlib)           |
 | Secret Management| Streamlit Secrets (`st.secrets`)    |
